@@ -3,6 +3,7 @@ import sqlite3
 import urllib2
 from subprocess import call
 from pyquery import PyQuery as pq
+from twilio.rest import TwilioRestClient
 
 
 class Torrent(object):
@@ -22,6 +23,15 @@ authkey = "d47f7ec2d34ed7cca818eeab4519b877"
 torrent_pass = "16bc0c98af3d7b0eae8ee38ba9d037ee"
 
 
+def sms(msg="BIG TORRENTS!"):
+    account_sid = "AC7bf5b0d18411238e4854e66e73344811"
+    auth_token = "c5b8dea7225d3d63df07d437b997eaea"
+    client = TwilioRestClient(account_sid, auth_token)
+    client.messages.create(to="+14199570527",
+                           from_="+14195000069",
+                           body=msg)
+
+
 def get_download_link(torrent_id):
     return ("https://what.cd/torrents.php?action=download" +
             "&id=" + torrent_id +
@@ -33,11 +43,13 @@ def torrent_name(torrent_id):
     return torrent_id + ".torrent"
 
 
-def download_torrent(torrent):
-    torrent = urllib2.urlopen(get_download_link(torrent.id))
-    output = open(torrent_name(torrent.id), 'wb')
-    output.write(torrent.read())
-    output.close()
+def download_torrent(name, torrent):
+    with open(name + '.torrent', 'wb') as handle:
+        for block in torrent.iter_content(1024):
+                if not block:
+                    break
+
+                handle.write(block)
 
 
 # Returns True if torrent exists
@@ -80,14 +92,16 @@ for torrent in html_torrents:
         elif i > 3:
             break
 
-hit_once = False
 
 for torrent in torrents:
-    if int(torrent.votes) > 20:
+    hit_once = False
+
+    if int(torrent.votes) >= 20:
+        print torrent.id
         if not db_check_exist(torrent.id):
             if not hit_once:
-                call(['sm', 'big torrent!'])
+                # download_torrent(torrent)
+                download_torrent(torrent.id, api.get_torrent(torrent.id))
+                sms()
             hit_once = True
             db_add(torrent.id)
-            # print torrent.votes
-            # print api.get_torrent(torrent.id)

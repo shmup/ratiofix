@@ -56,7 +56,7 @@ class WhatAPI:
             params['torrent_pass'] = self.passkey
         r = self.session.get(torrentpage, params=params, allow_redirects=False)
         if r.status_code == 200 and 'application/x-bittorrent' in r.headers['content-type']:
-            return r.content
+            return r
         return None
 
     def check_requests(self):
