@@ -23,10 +23,10 @@ class WhatAPI:
         self.authkey = None
         self.passkey = None
         if config:
-            config = ConfigParser()
-            config.read(config)
-            self.username = config.get('login', 'username')
-            self.password = config.get('login', 'password')
+            cfg = ConfigParser()
+            cfg.read(config)
+            self.username = cfg.get('login', 'username')
+            self.password = cfg.get('login', 'password')
         else:
             self.username = username
             self.password = password
@@ -62,7 +62,9 @@ class WhatAPI:
     def check_requests(self):
         request_page = 'https://ssl.what.cd/requests.php?order=filled&sort=desc&'
         r = self.session.get(request_page, allow_redirects=False)
-        return r.content
+        if r.status_code == 200:
+            return r.content
+        return None
 
     def request(self, action, **kwargs):
         '''Makes an AJAX request at a given action page'''
