@@ -59,7 +59,7 @@ class WhatAPI:
             return r
         return None
 
-    def check_requests(self):
+    def get_filled_requests(self):
         request_page = 'https://ssl.what.cd/requests.php?order=filled&sort=desc&'
         r = self.session.get(request_page, allow_redirects=False)
         if r.status_code == 200:

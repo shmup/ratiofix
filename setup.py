@@ -16,7 +16,7 @@ setup(
       license='BSD',
       url='https://bitbucket.org/shmup/ratiofix',
       install_requires=(
-        'scrapy',
+        'pyquery',
         'requests'
         )
      )

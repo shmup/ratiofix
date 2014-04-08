@@ -4,3 +4,8 @@ env
 *.pyc
 tags
 torrents.db
+stuff.conf
+build
+dist
+*.egg-info
+*.torrent

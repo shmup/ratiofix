@@ -42,7 +42,7 @@ class RatioFix(object):
         self.api = whatapi.WhatAPI(username=settings['username'],
                                    password=settings['password'])
         self.db = sqlite3.connect('torrents.db')
-        self.html = self.api.check_requests()
+        self.html = self.api.get_filled_requests()
         self.torrents = []
 
     def find_torrents(self):
@@ -112,12 +112,12 @@ def main():
     config = ConfigParser()
     config.read(args[0])
 
+
     for option in config.options("settings"):
         settings[option] = config.get("settings", option)
     
     fixit = RatioFix(settings)
     fixit.start()
-
 
 if __name__ == "__main__":
     main()
