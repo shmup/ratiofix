@@ -11,11 +11,14 @@ from twilio.rest import TwilioRestClient
 
 
 class Torrent(object):
-    def __init__(self):
+    def __init__(self, html):
         self._id = None
         self._title = None
         self._votes = None
         self.blob = None
+        self.html = html
+
+        self.build()
 
     @property
     def id(self):
@@ -28,6 +31,18 @@ class Torrent(object):
     @property
     def votes(self):
         return self._votes.strip()
+
+    def build(self):
+        text = pq(self.html).find('td')
+        for i, cell in enumerate(text):
+            if i == 0:
+                self._title = pq(cell).text()
+            elif i == 1:
+                self._votes = pq(cell).text()
+            elif i == 3:
+                self._id = pq(cell).find('a').attr('href')
+            elif i > 3:
+                break
 
     def save(self):
         with open(self.id + '.torrent', 'wb') as handle:
@@ -46,18 +61,9 @@ class RatioFix(object):
         self.torrents = []
 
     def find_torrents(self):
-        for torrent in pq(self.html).find('.rowb'):
-            text = pq(torrent).find('td')
-            album = Torrent()
-            for i, cell in enumerate(text):
-                if i == 0:
-                    album._title = pq(cell).text()
-                elif i == 1:
-                    album._votes = pq(cell).text()
-                elif i == 3:
-                    album._id = pq(cell).find('a').attr('href')
-                elif i > 3:
-                    break
+        for torrent_html in pq(self.html).find('.rowb'):
+
+            album = Torrent(torrent_html)
 
             # if we already have processed this torrent, gtfo
             if self.db_check_exist(album.id):
@@ -82,14 +88,6 @@ class RatioFix(object):
         cursor.execute('INSERT INTO torrents values (' + torrent_id + ');')
         db.commit()
 
-    def sms(self, msg="BIG TORRENT!"):
-        account_sid = "AC7bf5b0d18411238e4854e66e73344811"
-        auth_token = "c5b8dea7225d3d63df07d437b997eaea"
-        client = TwilioRestClient(account_sid, auth_token)
-        client.messages.create(to="+14199570527",
-                            from_="+14195000069",
-                            body=msg)
-
     def start(self):
         self.find_torrents()
         for torrent in self.torrents:
@@ -98,9 +96,7 @@ class RatioFix(object):
 
 
 def main():
-
     parser = OptionParser()
-
     (options, args) = parser.parse_args()
 
     if len(args) != 1:
@@ -108,10 +104,8 @@ def main():
         exit(1)
 
     settings = {}
-
     config = ConfigParser()
     config.read(args[0])
-
 
     for option in config.options("settings"):
         settings[option] = config.get("settings", option)
