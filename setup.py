@@ -14,7 +14,7 @@ setup(
       author_email='jared@cantcode.com',
       description='Stupid attempt at fixing a what.cd ratio.',
       license='BSD',
-      url='https://bitbucket.org/shmup/ratiofix',
+      url='https://github.com/shmup/ratiofix',
       install_requires=(
         'pyquery',
         'requests'
