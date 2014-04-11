@@ -1,14 +1,6 @@
 import sqlite3
 
 db = sqlite3.connect('torrents.db')
-
 cursor = db.cursor()
-
-cursor.execute('DROP TABLE IF EXISTS torrents;')
-db.commit()
-
-cursor.execute('CREATE TABLE torrents(id INTEGER);')
-db.commit()
-
-cursor.execute('CREATE UNIQUE INDEX torrents_id ON torrents(id);')
+cursor.execute('CREATE TABLE IF NOT EXISTS torrents(id INTEGER, PRIMARY KEY(id));')
 db.commit()
