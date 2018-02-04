@@ -5,7 +5,7 @@ import requests
 headers = {
     'Content-type': 'application/x-www-form-urlencoded',
     'Accept-Charset': 'utf-8',
-    'User-Agent': 'whatapi [isaaczafuta]'
+    'User-Agent': 'apolloapi [shmup]'
     }
 
 class LoginException(Exception):
@@ -16,7 +16,7 @@ class RequestException(Exception):
     pass
 
 
-class WhatAPI:
+class ApolloAPI:
     def __init__(self, config=None, username=None, password=None):
         self.session = requests.Session()
         self.session.headers = headers
@@ -34,7 +34,7 @@ class WhatAPI:
 
     def _login(self):
         '''Logs in user and gets authkey from server'''
-        loginpage = 'https://ssl.what.cd/login.php'
+        loginpage = 'https://apollo.rip/login.php'
         data = {'username': self.username,
                 'password': self.password,
                 'keeplogged': 1,
@@ -49,7 +49,7 @@ class WhatAPI:
 
     def get_torrent(self, torrent_id):
         '''Downloads the torrent at torrent_id using the authkey and passkey'''
-        torrentpage = 'https://ssl.what.cd/torrents.php'
+        torrentpage = 'https://apollo.rip/torrents.php'
         params = {'action': 'download', 'id': torrent_id}
         if self.authkey:
             params['authkey'] = self.authkey
@@ -60,7 +60,7 @@ class WhatAPI:
         return None
 
     def get_filled_requests(self):
-        request_page = 'https://ssl.what.cd/requests.php?order=filled&sort=desc&'
+        request_page = 'https://apollo.rip/requests.php?order=filled&sort=desc&'
         r = self.session.get(request_page, allow_redirects=False)
         if r.status_code == 200:
             return r.content
@@ -68,7 +68,7 @@ class WhatAPI:
 
     def request(self, action, **kwargs):
         '''Makes an AJAX request at a given action page'''
-        ajaxpage = 'https://ssl.what.cd/ajax.php'
+        ajaxpage = 'https://apollo.rip/ajax.php'
         params = {'action': action}
         if self.authkey:
             params['auth'] = self.authkey

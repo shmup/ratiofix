@@ -2,7 +2,7 @@
 
 from optparse import OptionParser
 from ConfigParser import ConfigParser
-import whatapi
+import apolloapi
 import sqlite3
 import urllib2
 from subprocess import call
@@ -54,7 +54,7 @@ class Torrent(object):
 class RatioFix(object):
     def __init__(self, settings):
         self.settings = settings
-        self.api = whatapi.WhatAPI(username=settings['username'],
+        self.api = apolloapi.ApolloAPI(username=settings['username'],
                                    password=settings['password'])
         self.db = sqlite3.connect('torrents.db')
         self.html = self.api.get_filled_requests()

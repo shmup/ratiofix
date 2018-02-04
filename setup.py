@@ -9,10 +9,10 @@ except ImportError:
 
 setup(
       name='ratiofix',
-      version='1.0',
+      version='1.1',
       author='Jared Miller',
       author_email='jared@cantcode.com',
-      description='Stupid attempt at fixing a what.cd ratio.',
+      description='Stupid attempt at fixing a apollo.rip ratio.',
       license='BSD',
       url='https://github.com/shmup/ratiofix',
       install_requires=(
