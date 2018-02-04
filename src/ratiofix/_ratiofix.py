@@ -86,12 +86,13 @@ class RatioFix(object):
         if self.db_check_exist(torrent_id): return
         cursor = self.db.cursor()
         cursor.execute('INSERT INTO torrents values (' + torrent_id + ');')
-        db.commit()
+        self.db.commit()
 
     def start(self):
         self.find_torrents()
         for torrent in self.torrents:
             print 'saving ' + torrent.id + '.torrent'
+            self.db_add(torrent.id)
             torrent.save()
 
 
